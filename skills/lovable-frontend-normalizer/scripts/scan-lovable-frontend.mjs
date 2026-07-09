@@ -114,17 +114,22 @@ function analyzePackage() {
 
   info.push(`Detected stack: ${stack.length ? stack.join(", ") : "no expected frontend dependencies found"}.`);
 
-  const packageManager = exists("pnpm-lock.yaml")
-    ? "pnpm"
-    : exists("yarn.lock")
-      ? "yarn"
-      : exists("bun.lockb") || exists("bun.lock")
-        ? "bun"
-        : exists("package-lock.json")
-          ? "npm"
-          : "npm (no lockfile)";
+  const conflictingLocks = [
+    "pnpm-lock.yaml",
+    "yarn.lock",
+    "bun.lock",
+    "bun.lockb",
+  ].filter(exists);
 
-  info.push(`Detected package manager: ${packageManager}.`);
+  if (exists("package-lock.json")) {
+    info.push("Package manager: npm.");
+  } else {
+    info.push("Package manager: npm expected; package-lock.json not found.");
+  }
+
+  if (conflictingLocks.length) {
+    warnings.push(`Non-npm lockfiles found: ${conflictingLocks.join(", ")}. App Factory normalization should use npm unless a documented exception exists.`);
+  }
 }
 
 function analyzeFiles() {

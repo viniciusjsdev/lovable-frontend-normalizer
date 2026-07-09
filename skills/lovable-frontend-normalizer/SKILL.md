@@ -32,22 +32,25 @@ Run `scripts/scan-lovable-frontend.mjs` from the consuming project when the scri
 ## Workflow
 
 1. Inspect `package.json`, lockfiles, `src/routes`, `src/components`, `src/pages`, `src/features`, `src/mocks` and shared UI folders.
-2. Detect the package manager from the lockfile and preserve the current React/TypeScript/TanStack/Tailwind stack unless the user asks for a change.
-3. If the detected package manager is unavailable, do not switch managers repeatedly or repair `node_modules` manually. Report the blocked validation and continue only with checks that can run safely.
-4. Identify overloaded route files, large page/component files, direct mock imports, direct API calls in UI, large shell/layout files and scattered generated data.
-5. Create a concise refactor plan that states what will be moved and what UI/UX will be preserved.
-6. Keep route files thin: route declaration, metadata, params/search validation and rendering a feature page.
-7. Move screen composition into feature pages when needed.
-8. Move reusable screen sections into feature components.
-9. Move state orchestration, derived data and side effects into hooks.
-10. Move data access, DTO mapping and mock/real switching into services.
-11. Isolate mocks behind services or feature data boundaries.
-12. Preserve visual identity, copy, flows, interactions, navigation, cards, forms, charts, dialogs, drawers, animations, toasts, loading states, empty states and existing demo behavior.
-13. Remove generated platform metadata only when it is not required for build/runtime and the project convention allows it.
-14. Keep mobile-first behavior working at 360px width unless the product explicitly targets desktop only.
-15. Update architecture/API documentation when the refactor creates or clarifies boundaries.
-16. Run format, lint, build, architecture scan and local dev-server validation when possible.
-17. Report exactly what was changed, what was preserved and which validations passed or failed.
+2. Preserve the current React/TypeScript/TanStack/Tailwind stack unless the user asks for a change.
+3. Normalize App Factory Lovable projects to npm unless the user or project docs explicitly require pnpm, yarn or bun.
+4. If npm normalization is allowed, remove conflicting lockfiles (`pnpm-lock.yaml`, `yarn.lock`, `bun.lock`, `bun.lockb`), keep or generate `package-lock.json`, and use npm for install, format, lint, build and dev-server commands.
+5. If the project explicitly requires a non-npm package manager, use it and report that npm normalization was intentionally skipped.
+6. Do not switch managers repeatedly or repair `node_modules` manually. If dependency state is broken, report the blocker and the closest completed validation.
+7. Identify overloaded route files, large page/component files, direct mock imports, direct API calls in UI, large shell/layout files and scattered generated data.
+8. Create a concise refactor plan that states what will be moved, what UI/UX will be preserved and whether npm normalization will happen.
+9. Keep route files thin: route declaration, metadata, params/search validation and rendering a feature page.
+10. Move screen composition into feature pages when needed.
+11. Move reusable screen sections into feature components.
+12. Move state orchestration, derived data and side effects into hooks.
+13. Move data access, DTO mapping and mock/real switching into services.
+14. Isolate mocks behind services or feature data boundaries.
+15. Preserve visual identity, copy, flows, interactions, navigation, cards, forms, charts, dialogs, drawers, animations, toasts, loading states, empty states and existing demo behavior.
+16. Remove generated platform metadata only when it is not required for build/runtime and the project convention allows it.
+17. Keep mobile-first behavior working at 360px width unless the product explicitly targets desktop only.
+18. Update architecture/API documentation when the refactor creates or clarifies boundaries.
+19. Run format, lint, build, architecture scan and local dev-server validation when possible.
+20. Report exactly what was changed, what was preserved, package manager changes and which validations passed or failed.
 
 ## Architecture Target
 
@@ -118,6 +121,22 @@ Do not convert TypeScript to JavaScript, TanStack Router to React Router, Vite/T
 
 If the user asks to align with another repository stack, explain that this is a separate migration. Preserve UI/UX only with explicit visual comparison, because changing the stack can alter rendering, routing, SSR/hydration behavior, styling and component semantics.
 
+## Package Manager Standard
+
+App Factory standard is npm.
+
+For Lovable-generated or App Factory MVP projects, npm normalization is part of frontend normalization, not an ad hoc fallback. Use npm unless the user explicitly asks to keep another manager or the project has a documented constraint requiring pnpm, yarn or bun.
+
+When normalizing to npm:
+
+- remove `pnpm-lock.yaml`, `yarn.lock`, `bun.lock` and `bun.lockb`
+- keep `package-lock.json` when present
+- run `npm install` to create or update `package-lock.json`
+- run validation with `npm run format`, `npm run lint`, `npm run build` and `npm run dev`
+- report that the package manager was normalized to npm
+
+Do not delete or rewrite dependency declarations in `package.json` solely because the package manager changed. Do not manually patch `node_modules`. If stale `node_modules` causes validation failures, report it clearly; remove/reinstall dependencies only when that is appropriate for the current project and not mixed with unrelated source changes.
+
 ## Boundaries
 
 Use this direction:
@@ -139,7 +158,7 @@ Services are the data boundary. Components render UI. Hooks orchestrate state an
 
 ## Validation
 
-Attempt the equivalent commands for the detected package manager:
+Attempt the npm commands after package manager normalization:
 
 ```bash
 npm install
@@ -152,7 +171,7 @@ npm run dev
 
 Adapt the script path if the skill is installed elsewhere, such as `node ~/.codex/skills/lovable-frontend-normalizer/scripts/scan-lovable-frontend.mjs`.
 
-Do not claim the project runs locally unless the dev server was actually started and checked for immediate startup errors. If validation is blocked by missing environment variables, unavailable ports, missing commands, unavailable package manager, incomplete dependencies or environment limitations, say that clearly and report the closest completed validation.
+Do not claim the project runs locally unless the dev server was actually started and checked for immediate startup errors. If validation is blocked by missing environment variables, unavailable ports, missing commands, incomplete dependencies or environment limitations, say that clearly and report the closest completed validation.
 
 ## Definition of Done
 
@@ -166,4 +185,5 @@ Finish only after these are true or explicitly reported as blocked:
 - shell/layout files are not dumping grounds
 - mobile-first behavior is preserved
 - docs are updated where architecture or API boundaries changed
+- package manager is npm, or a documented exception explains why npm was skipped
 - format, lint, build, architecture scan and local dev-server validation were attempted

@@ -6,7 +6,7 @@
 
 ## Required Inputs
 
-- frontend project path and package manager
+- frontend project path and npm/package-manager exception, if any
 - backend project path and runtime
 - frontend dev/build commands
 - backend run/check/test commands
@@ -62,7 +62,7 @@ The skill must support multiple modes without presenting one as mandatory:
 When Vercel is used, the output should document:
 
 - `frontend` as the Vercel project root directory for monorepos
-- build command and output directory, preferably using Vercel auto-detection unless overrides are needed
+- build command and output directory, using npm by default and Vercel auto-detection unless overrides are needed
 - Development, Preview and Production environment variables
 - which frontend variables are public/browser-exposed
 - backend API URL per environment

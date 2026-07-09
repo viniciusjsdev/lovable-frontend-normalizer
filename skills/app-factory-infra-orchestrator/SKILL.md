@@ -131,7 +131,7 @@ frontend/.dockerignore
 Development Dockerfile should:
 
 - use Node LTS image
-- install dependencies with the detected package manager
+- install dependencies with npm by default
 - support Vite/TanStack/React dev server
 - bind to `0.0.0.0`
 - expose the correct dev port
@@ -262,7 +262,7 @@ Frontend deploy target:
 
 ```txt
 Root Directory: frontend
-Build Command: npm run build or detected package manager equivalent
+Build Command: npm run build
 Output Directory: dist or framework-specific output
 ```
 
@@ -318,7 +318,7 @@ prod-build:
 	docker compose -f docker-compose.prod.yml build
 ```
 
-Adapt to available package manager and backend tooling.
+Use npm for frontend commands unless the project has a documented package-manager exception. Adapt backend commands to the available backend tooling.
 
 ## Documentation
 

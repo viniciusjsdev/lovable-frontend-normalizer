@@ -167,6 +167,8 @@ The infra skill supports multiple deployment modes without forcing one productio
 | Database/Auth/Storage | Supabase when configured | Render Postgres or another Postgres provider when explicitly chosen |
 | Local development | Docker Compose | Supabase CLI local stack when Supabase-specific services are needed |
 
+Frontend projects are normalized to npm by default. pnpm, yarn or bun should remain only when the user or project docs explicitly require that exception.
+
 Render support covers:
 
 - native Python web service

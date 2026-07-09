@@ -6,7 +6,7 @@ Typical settings:
 
 ```txt
 Root Directory: frontend
-Build Command: npm run build or detected package manager equivalent
+Build Command: npm run build
 Output Directory: dist or framework-specific output
 ```
 
@@ -18,7 +18,7 @@ If using Vercel CLI, run linking/deploy commands from the monorepo root and sele
 
 ## Build Settings
 
-Vercel can auto-detect install and build settings for supported frontend frameworks. Override the install command, build command or output directory only when the detected settings are wrong.
+Vercel can auto-detect install and build settings for supported frontend frameworks. App Factory frontend projects should use npm by default. Override the install command, build command or output directory only when the detected settings are wrong or a documented package-manager exception exists.
 
 Create `frontend/vercel.json` only when the project needs custom rewrites, headers, framework settings or other explicit Vercel project configuration.
 

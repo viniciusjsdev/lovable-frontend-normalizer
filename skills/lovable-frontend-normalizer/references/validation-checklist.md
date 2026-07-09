@@ -2,9 +2,10 @@
 
 Before finishing, check:
 
-- [ ] package manager detected
-- [ ] detected package manager available or mismatch reported
-- [ ] dependencies installed or already available
+- [ ] npm is used as the package manager or a documented exception explains why not
+- [ ] conflicting pnpm/yarn/bun lockfiles removed when npm normalization applies
+- [ ] `package-lock.json` exists or npm install failure is reported
+- [ ] dependencies installed or already available through npm
 - [ ] format executed
 - [ ] lint executed
 - [ ] build executed
@@ -28,7 +29,8 @@ Classify failures as:
 - introduced by refactor
 - missing dependency
 - incomplete dependency installation
-- package manager unavailable
+- npm install failure
+- documented package manager exception unavailable
 - missing environment variable
 - unsupported environment
 - command not available

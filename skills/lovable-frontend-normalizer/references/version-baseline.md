@@ -55,27 +55,30 @@ Examples of migrations:
 
 Do not perform these changes implicitly. If the user asks for them, first state the tradeoff: UI/UX can be preserved only with deliberate visual comparison because rendering, styling, routing and hydration behavior can change.
 
-## Package Manager Detection
+## Package Manager Standard
 
-Use the lockfile:
+App Factory standard is npm.
 
-- `pnpm-lock.yaml` -> pnpm
-- `yarn.lock` -> yarn
-- `bun.lockb` or `bun.lock` -> bun
-- `package-lock.json` -> npm
-- no lockfile -> npm unless project docs say otherwise
+For Lovable-generated or App Factory MVP projects, normalize to npm unless the user explicitly asks to keep another manager or the project has a documented constraint requiring pnpm, yarn or bun.
 
-Use the detected package manager for install, format, lint, build and dev-server commands.
+This is an intentional factory standard, not a validation workaround.
 
-If the detected package manager is not available:
+When normalizing to npm:
 
-- Do not switch to another package manager just to make progress.
-- Do not create a second lockfile such as `package-lock.json` or `pnpm-lock.yaml`.
-- Do not repeatedly run install commands with different managers.
-- Do not patch `node_modules` manually with downloaded packages.
-- Report the package manager mismatch and continue only with validations that do not require reinstalling dependencies.
+- remove `pnpm-lock.yaml`
+- remove `yarn.lock`
+- remove `bun.lock`
+- remove `bun.lockb`
+- keep `package-lock.json` if present
+- run `npm install` to create or update `package-lock.json`
+- use npm for install, format, lint, build and dev-server commands
+- report the package manager normalization in the final summary
 
-If `node_modules` already exists, use local binaries only when they are complete enough to run. If local binaries or package files are missing, classify validation as blocked by incomplete dependencies.
+Do not keep multiple lockfiles. Do not repeatedly run install commands with different managers. Do not patch `node_modules` manually with downloaded packages.
+
+If the project must keep pnpm, yarn or bun, document the exception and use that manager consistently for all validation commands.
+
+If `node_modules` already exists, npm validation may still run. If local binaries or package files are missing or stale, classify validation as blocked by incomplete dependencies unless a clean npm install resolves it.
 
 ## Naming
 
