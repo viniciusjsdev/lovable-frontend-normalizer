@@ -12,6 +12,23 @@ The factories keep every stage explicit. Each skill consumes durable artifacts, 
 | Research and challenge a market hypothesis | Research | `market-research-architect` |
 | Plan, create, execute, and evaluate a launch | Marketing | `commercial-launch-architect` |
 
+```mermaid
+flowchart LR
+    I["Idea or existing product"]
+
+    I --> MVP["MVP Factory"]
+    I --> R["Research Factory"]
+    I --> M["Marketing Factory"]
+
+    R -. "optional approved handoff" .-> MVP
+    R -. "optional approved handoff" .-> M
+    MVP -. "optional product handoff" .-> M
+
+    MVP --> P["Hosted, testable MVP"]
+    R --> D["Market decision"]
+    M --> C["Launch and commercial learning"]
+```
+
 Research and marketing are optional. The MVP Factory does not depend on either of them.
 
 ## MVP Factory flow
@@ -92,15 +109,20 @@ An existing PRD remains the source of truth. The product skill creates only the 
 ## Install
 
 ```powershell
+$codexHome = if ($env:CODEX_HOME) { $env:CODEX_HOME } else { Join-Path $env:USERPROFILE ".codex" }
+$skillsHome = Join-Path $codexHome "skills"
+
 Get-ChildItem .\skills -Directory | ForEach-Object {
-  Copy-Item -Recurse $_.FullName (Join-Path $env:USERPROFILE ".codex\skills\$($_.Name)") -Force
+  Copy-Item -Recurse $_.FullName (Join-Path $skillsHome $_.Name) -Force
 }
 ```
 
 Install only the product skill:
 
 ```powershell
-Copy-Item -Recurse .\skills\product-brief-architect $env:USERPROFILE\.codex\skills\product-brief-architect -Force
+$codexHome = if ($env:CODEX_HOME) { $env:CODEX_HOME } else { Join-Path $env:USERPROFILE ".codex" }
+$skillName = "product-brief-architect"
+Copy-Item -Recurse (Join-Path ".\skills" $skillName) (Join-Path $codexHome "skills\$skillName") -Force
 ```
 
 ## Usage
@@ -226,15 +248,19 @@ OpenCode is an optional low-cost writer for approved backend work. Install and c
 ```powershell
 Copy-Item .env.example .env
 node .\skills\app-factory-backend-router\scripts\opencode-doctor.mjs
-node .\skills\app-factory-backend-router\scripts\route-backend-execution.mjs --project-root D:\caminho\do\projeto
+$projectRoot = (Resolve-Path ..\my-project).Path
+node .\skills\app-factory-backend-router\scripts\route-backend-execution.mjs --project-root $projectRoot
 ```
 
 ## Validation
 
 ```powershell
-python C:\Users\welli\.codex\skills\.system\skill-creator\scripts\quick_validate.py .\skills\product-brief-architect
-python C:\Users\welli\.codex\skills\.system\skill-creator\scripts\quick_validate.py .\skills\market-research-architect
-python C:\Users\welli\.codex\skills\.system\skill-creator\scripts\quick_validate.py .\skills\commercial-launch-architect
+$codexHome = if ($env:CODEX_HOME) { $env:CODEX_HOME } else { Join-Path $env:USERPROFILE ".codex" }
+$quickValidate = Join-Path $codexHome "skills\.system\skill-creator\scripts\quick_validate.py"
+Get-ChildItem .\skills -Directory | ForEach-Object {
+  python $quickValidate $_.FullName
+}
+
 node .\skills\app-factory-research-router\scripts\test-router.mjs
 node .\skills\app-factory-commercial-router\scripts\test-router.mjs
 node .\skills\app-factory-backend-router\scripts\opencode-doctor.mjs

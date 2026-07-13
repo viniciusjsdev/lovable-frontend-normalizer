@@ -116,16 +116,18 @@ approved_at: 2026-07-13
 Dry-run the decision:
 
 ```powershell
+$projectRoot = (Resolve-Path ..\my-project).Path
 node .\skills\app-factory-backend-router\scripts\route-backend-execution.mjs `
-  --project-root D:\Projetos\MeuApp `
+  --project-root $projectRoot `
   --dry-run
 ```
 
 Execute:
 
 ```powershell
+$projectRoot = (Resolve-Path ..\my-project).Path
 node .\skills\app-factory-backend-router\scripts\route-backend-execution.mjs `
-  --project-root D:\Projetos\MeuApp `
+  --project-root $projectRoot `
   --task-id implementar-contrato-backend-v1
 ```
 
